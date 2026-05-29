@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<style>
+.container{
+   max-width:750px;
+     margin:20px auto; 
+     font-family: Arial, sans-serif;
+     padding: 12px; 
+     background: #fbfbfbc7;
+
+}
+
+  .form{
+    max-width:750px;
+     margin:20px auto; 
+     font-family: Arial, sans-serif;
+     padding: 12px; 
+     background: #fbfbfbc7;
+  }
+.slot {
+    padding: 8px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.slot.active {
+    border-color: green;
+}
+
+.back-link {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+button{
+    width: 50%;
+    border-radius: 5%;
+    margin-left: 25%;
+    margin-top: 14px;
+    background-color: #3b95e38a;
+    border: 1px ;
+    padding: 6px;
+  }
+</style>
+
+
+<div class = "form">
+  <h3>Set Availability — Dr. {{ doctor.username }}</h3>
+  <form method="POST">
+    {% for r in grid %}
+      <div style="display:flex;gap:12px;align-items:center;margin:6px 0;" data-date="{{ r.date }}">
+        <div style="width:140px;background:#eaf4ff;padding:8px;border-radius:4px;">{{ r.date }}</div>
+        <div class="slot {{ 'active' if r.slot1 else '' }}" data-slot="slot1"
+        onclick="toggleSlot(this)">
+          08:00 - 12:00
+        </div>
+
+        <div class="slot {{ 'active' if r.slot2 else '' }}" data-slot="slot2" onclick="toggleSlot(this)">
+          04:00 - 09:00
+        </div>
+      </div>
+  {% endfor %}
+
+  <!-- JS will add hidden inputs named "selected" when saving -->
+    <div style="margin-top:12px;">   
+      <button type="submit">Save</button>
+      <a class="back-link" href="{{ url_for('doctor.doctor_dashboard') }}">Back</a>
+    </div>
+  </form>
+</div>
+
+
+<!-- Working Fine  -->
+<script>
+  // small JS to toggle and set hidden inputs before submit
+  (async function(){
+    const selected = new Set();
+    await document.querySelectorAll('[data-date]').forEach(row => {
+      const date = row.dataset.date;
+      row.querySelectorAll('[data-slot]').forEach(el => {
+        const slot = el.dataset.slot;
+        // mark initially selected
+        if (el.style.borderColor === 'green') selected.add(date + '|' + slot);
+        el.addEventListener('click', ()=>{
+          const key = date + '|' + slot;
+          if (selected.has(key)) {
+            selected.delete(key);
+            el.style.borderColor = '#ccc';
+          } else {
+            selected.add(key);
+            el.style.borderColor = 'green';
+          }
+          
+          console.log(selected)
+        });
+      });
+    });
+
+    document.querySelector('form').addEventListener('submit', function(e){
+      // append hidden fields
+      selected.forEach(v=>{
+        const inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = 'selected'; inp.value = v;
+        this.appendChild(inp);
+      });
+    });
+  })();
+</script>
+
+<script>
+function toggleSlot(element) {
+    element.classList.toggle("active");
+}
+</script>
+
+
+
+
+
+{% endblock %}

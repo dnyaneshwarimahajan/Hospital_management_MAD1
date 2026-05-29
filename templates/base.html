@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Hospital Management{% endblock %}</title>
+
+  <style>
+    /* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url('{{ url_for("static", filename="health.webp") }}');
+    color: #222;
+}
+
+/* Header */
+header {
+    background: linear-gradient(180deg, #082ba9a6, #19b39eb9);
+    padding: 15px 0;
+    color: #fff;
+    backdrop-filter: inherit;
+}
+
+/* Navbar container */
+.nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Brand */
+.brand .title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 10px;
+    font-size: 0.95rem;
+    border-radius: 4px;
+}
+
+nav a:hover {
+    background: #3a3a3a49;
+}
+
+/* search box (admin only) */
+.nav-search input {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+/* Main container */
+.container {
+    max-width: 1100px;
+    /*margin: 20px auto;*/
+    padding: 0px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.08);
+}
+
+.flash {
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    width: 80%;
+    position: relative;
+    align-items: flex-start;
+    font-size: 0.9rem;
+}
+
+.flash.success {
+    background: #e7f9ef;
+    border-left: 4px solid #22c55e;
+}
+
+.flash.warning {
+    background: #fff8dd;
+    border-left: 4px solid #eab308;
+}
+
+.flash.danger {
+    background: #fde7e7;
+    border-left: 4px solid #ef4444;
+}
+
+
+
+
+  
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <div class="brand">
+        <div>
+          <div class="title">Hospital Management</div>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+
+          {% if not session.get('name') %}
+            <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+          {% endif %}
+
+          {% if session.get('role') == 'patient' %}
+              <li><a href = "{{url_for('patient.patient_history')}}">History</a></li>
+              <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+              <li><a href= "{{url_for('patient.edit_profile')}}"> Edit Profile</a></li>
+          {% endif %}
+
+          {% if session.get('role') == 'doctor' %}
+            <!-- <li><a href="{{ url_for('doctor.doctor_history') }}">History</a></li> -->
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+          {% endif %}
+
+          {% if session.get('role') == 'admin' %}
+            <li>
+              <form method="get" action="{{ url_for('admin.admin_dashboard') }}" class="nav-search" style="display:inline-block;margin-left:6px;">
+                <input type="search" name="q" value="{{ q or '' }}" placeholder="Search...">
+              </form>
+            </li>
+            <!-- <li><a href="{{ url_for('admin.admin_history') }}">History</a></li> -->
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category|default('') }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

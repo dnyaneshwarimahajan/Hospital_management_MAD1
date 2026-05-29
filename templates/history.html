@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.page { max-width: 1000px; margin: 20px auto; background: #eaf3f7cd; padding: 20px;margin-left: 20%; }
+.back-btn { float:right; background-color: rgb(2, 33, 33);
+        color: white; border:1px solid; padding:5px 12px; border-radius:6px; text-decoration:none; }
+.header { border-bottom: 1px solid #111; padding-bottom: 10px; margin-bottom: 20px; }
+.table-box { border: 2px solid #111; padding: 15px; }
+.table { width:100%; border-collapse: collapse; }
+.table th, .table td { padding: 8px; border-bottom: 1px solid #ccc; }
+.table th { text-align:left; font-weight:600; }
+.small { color:#666; }
+</style>
+{% set viewer_role = session.get('role') %}
+{% set viewer_name = session.get('name') %}
+<div class="page">
+  {% if viewer_role == 'doctor' %}
+    <a href="{{ url_for('doctor.doctor_dashboard') }}" class="back-btn">back</a>
+  {% elif viewer_role == 'patient' %}
+    <a href="{{ url_for('patient.patient_dashboard') }}" class="back-btn">back</a>
+  {% elif viewer_role == 'admin' %}
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="back-btn">back</a>
+  {% else %}
+    <a href="{{ url_for('home') }}" class="back-btn">back</a>
+  {% endif %}
+
+  {% if viewer_role == 'admin' and patient.username != 'admin' %}
+      <h2 class="header">Patient History</h2>
+      <p><strong>Admin Name:</strong> {{ viewer_name }}</p>
+      <p><strong>Patient Name:</strong> {{ patient.username }}</p>
+  {% elif viewer_role == 'admin' and patient.username == 'admin' %}
+      <h2 class="header">Appointment History</h2>
+      <p><strong>Admin Name:</strong> {{ patient.username }}</p>
+  {% else %}
+      <h2 class="header">Patient History</h2>
+      <p><strong>Patient Name:</strong> {{ patient.username }}</p>
+
+  {% endif %}
+
+  <!-- <h2 class="header">Patient History</h2>
+
+  {% if viewer_role == 'admin' %} -->
+    <!-- {% if viewer_name == 1 %}
+      <p><strong>Admin Name:</strong> {{ 'Admin' }}</p>
+    {% else %} -->
+
+<!--       
+    <p><strong>Patient Name:</strong> {{ patient.username }}</p>
+
+    {% endif %} -->
+    
+    <!-- <p><strong>Patient Name:</strong> {{ patient.username }}</p> -->
+       
+    
+
+  <!-- {% else %}
+     <p><strong>Patient Name:</strong> {{ patient.username }}</p>
+  {% endif %}    -->
+
+  <!-- {% if  history or history|length == 0 %}
+    <p class="small">No history records found for this patient.</p> -->
+  <br>  
+
+  {% endif %}
+
+  <div class="table-box">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Visit No.</th>
+          {% if viewer_role == 'doctor' or viewer_role == 'admin' %}<th>Patient Name</th>{% endif %}
+          <th>Visit Type</th>
+          <th>Doctor Name</th> 
+          <th>Department</th>
+          <th>Diagnosis</th>
+          <th>Prescription</th>
+          <th>Medicines</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% if history %}
+          {% for h in history %}
+            <tr>
+              <td>{{ loop.index }}.</td>
+              {% if viewer_role == 'doctor' or viewer_role == 'admin' %}
+                <td>{{ h.patient_name or '-' }}</td>
+              {% endif %}
+              <td>In-person</td>
+              <td>{{ h.doctor_name or '-' }}</td>
+              <td>{{ h.department_name or '-' }}</td>
+              <td>{{ h.dignosis or '-' }}</td>
+
+              {# If you store prescription and medicines separately later, replace these with proper fields #}
+              <td>{{ h.treatment or '-' }}</td>
+              <td>{{ h.prescription or '-' }}</td>
+              <td>{{ h.status or '-' }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="small">No visits recorded.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="login">
+    <h2>Login</h2>
+
+    <form method="POST">
+
+        <label>Username</label>
+        <input type="text" name="username" class="input" placeholder="Enter username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" class="input" placeholder="Enter password" required>
+
+        <button type="submit" class="btn">Login</button>
+    </form>
+
+    <p class = "register" >
+        Don't have an account?
+        <a href="{{ url_for('auth.register') }}">Register</a>
+    </p>
+</div>
+
+<style>
+.login{
+    max-width: 380px;
+    margin: auto;
+    margin-top: 100px;
+    background-color:  #19b39e4a;
+    padding: 26px;
+}
+.login h2{
+    margin-top:0;margin-bottom:14px;text-align:center;
+}
+label{
+    text-align: center;
+    margin-left: 10%;
+}
+.input, .btn{
+    width: 80%;
+    padding: 10px;
+    margin: 6px 0 16px 0;
+    margin-left: 10%;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+    background-color: rgba(247, 248, 248, 0.743);
+}
+.btn{
+    width: 50%;
+    border-radius: 5%;
+    margin-left: 25%;
+    margin-top: 14px;
+    background-color: #3b95e38a;
+    border: 1px ;
+}
+.register{
+    text-align:center;
+    margin-top:12px;
+
+}
+.register a{
+    color: rgba(0, 0, 0, 0.795);
+    border-radius: 5%;
+}
+</style>
+
+{% endblock %}

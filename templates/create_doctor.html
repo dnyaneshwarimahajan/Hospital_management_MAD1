@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.form-container {
+  margin-top: 40px;
+  max-width: 600px;
+  margin-left: 20%;
+  /* margin: 0 auto; */
+  background-color:  #19b39e4a;
+  padding: 22px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.form-title { 
+  margin-bottom: 16px;
+  text-align: center;
+ }
+.input-group { 
+  margin-bottom: 14px; }
+
+label { 
+  font-weight: 600; 
+  margin-bottom: 4px;
+  margin-left: 20%;
+   display:block; 
+  }
+.input, select {
+  width: 60%;
+  padding: 8px;
+  margin-left: 20%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+.btn {
+  padding: 8px 14px;
+  color: #fff;
+  cursor: pointer;
+  width: 30%;
+  border-radius: 6px;
+  
+  /* margin-top: 14px; */
+  background-color: #3b95e38a;
+  border: 1px ;
+}
+.create{
+  margin-left: 18%;
+  font-weight: 700;
+  background-color: rgb(2, 33, 33);
+
+}
+
+.btn-secondary {
+  background-color:  #360202da;
+  text-align: center;
+}
+</style>
+
+<div class="form-container">
+
+  <h2 class="form-title">Create New Doctor</h2>
+
+  <form method="POST" action="{{ url_for('admin.create_doctor') }}">
+
+    <!-- Username -->
+    <div class="input-group">
+      <label>Doctor Name</label>
+      <input class = "input" type="text" name="username" required placeholder="Enter doctor's name">
+    </div>
+
+    <!-- Email -->
+    <div class="input-group">
+      <label>Email</label>
+      <input class = "input"  type="email" name="email_id" required placeholder="doctor@example.com">
+    </div>
+
+    <!-- Password -->
+    <div class="input-group">
+      <label>Password</label>
+      <input class = "input"  type="text" name="password" required placeholder="set a simple password">
+    </div>
+
+    <!-- Department Dropdown -->
+    <div class="input-group">
+      <label>Select Department</label>
+      <select name="department_id">
+        <option class = "input" style="color:#6b7280 ;" value="">-- Select existing department --</option>
+
+        {% for dept in departments %}
+          <option value="{{ dept.id }}">{{ dept.dept_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Add new department -->
+    <div class="input-group">
+      <label>Create New Department</label>
+      <input class = "input"  type="text" name="new_department" placeholder="Enter new department name">
+      <br>
+      <small style="color:#6b7280; margin-left:20%;">(Leave blank if not creating a new department)</small>
+    </div>
+    
+    <div class="input-group">
+      <label>New Department Description</label>
+      <textarea class = "input" name="new_department_description" placeholder="Enter new department description"></textarea>
+      <br>
+      <small style="color:#6b7280; margin-left:20%;" class = "">(Leave blank if not creating a new department)</small>
+    </div>
+
+    <div style="margin-top:20px; display:flex; gap:10px;">
+      <button class="btn create">Create Doctor</button>
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

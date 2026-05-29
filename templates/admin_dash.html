@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+
+/* -------- Basic Reset -------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 18px;
+}
+
+/* -------- Cards -------- */
+.card {
+    background: #fbfbfbc7;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+}
+.card h4{
+  color: #61052d;
+}
+
+.user-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 10px;
+    border-bottom: 5px solid #b4f0f0ab;
+}
+.user-row:last-child {
+    border-bottom: none;
+}
+
+.user-left {
+    font-weight: 600;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: #054145;
+}
+
+.user-meta {
+    color: #3559a1;
+    font-size: 0.9rem;
+    margin-top: 3px;
+}
+
+.btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.edit{
+  background-color: #1ff3868d;
+  color: #111827;
+
+}
+.delete{
+  background-color: #e66969b8;
+  color:#2f0303;
+}
+
+.black{
+  background-color: #05132f9e;
+}
+.unblock{
+  background-color: #066f77c3;
+}
+.btn_create{
+  background-color: #052c2fe2;
+  color: white;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    transition: 0.15s ease;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    border-radius: 6px;
+}
+
+.table thead th {
+    background: #b4e6de7a;
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* -------- Flash messages -------- */
+.flash {
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.flash.success {
+    background: #e6f9ed;
+    color: #148a3b;
+    border-left: 4px solid #148a3b;
+}
+
+.flash.warning {
+    background: #fff8e6;
+    color: #b45309;
+    border-left: 4px solid #b45309;
+}
+
+.flash.danger {
+    background: #fde7e7;
+    color: #b91c1c;
+    border-left: 4px solid #b91c1c;
+}
+
+/* -------- Forms -------- */
+.form-inline {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* -------- Simple helpers -------- */
+.muted {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+
+
+div1{
+
+  display:flex;align-items:center;gap:12px;margin-bottom:16px;
+}
+.admin{
+  margin:0 0 4px 0;
+}
+.summary{
+  display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;
+}
+.one{
+  flex:1;min-width:220px
+
+}
+.summary h4{
+  margin-top:0px;
+  margin-bottom: 6px;
+}
+.doc{
+  flex:1;min-width:120px;
+
+}
+.sum-contain{
+  display:flex;gap:8px;flex-wrap:wrap
+}
+.rest{
+  flex:1;min-width:120px
+
+}
+.create_doc{
+  flex:1;min-width:320px
+
+}
+.create_doc form{
+  display:flex;gap:8px;align-items:center;
+
+}
+.badge{
+  margin-left:8px
+
+}
+.btn_edit{
+  display:inline-block;align-items:center;gap:8px
+
+}
+.btn_edit form{
+
+  display:inline;
+
+}
+.badge{
+  color: #2f0303;
+  font-weight: 600;
+}
+</style>
+
+<!-- optional banner/logo (local path — environment will transform to an URL) -->
+<div1 class="card">
+    <h2 class = "admin">Admin Dashboard</h2>
+    <div class="user-meta">Welcome, {{ session.get('name') or 'Admin' }}</div>
+</div1>
+
+<div class = "summary">
+  <div class="card one">
+    <h4 style=>Summary</h4>
+    <div class = "sum-contain">
+      <div class="card doc">
+        <strong>{{ doctors|length }}</strong>
+        <div class="muted">Doctors</div>
+      </div>
+      <div class="card rest">
+        <strong>{{ patients|length }}</strong>
+        <div class="muted">Patients</div>
+      </div>
+      <div class="card rest">
+        <strong>{{ appointments|length }}</strong>
+        <div class="muted">Appointments shown</div>
+      </div>
+    </div>
+  </div>
+
+  <div class = "create_doc card">
+    <form method="get" action="{{ url_for('admin.admin_dashboard') }}">
+      <a class="btn btn_create" href="{{ url_for('admin.create_doctor') }}">Create doctor</a>
+    </form>
+  </div>
+</div>
+
+<!-- Doctors list -->
+<div class="card">
+  <h4>Registered Doctors</h4>
+
+  {% if doctors %}
+    {% for d in doctors %}
+      <div class="user-row">
+        <div style="display:inline-block ;">
+          <div class="user-left">{{ d.username }}</div>
+          <div class="user-meta">{{ d.email_id }} • {{ d.contact_no or '-' }}</div>
+          <div class="user-meta">Dept: {{ d.department.dept_name if d.department else '-' }}
+            {% if d.blacklist %} <span class="badge">BLACKLISTED</span> {% endif %}
+          </div>
+        </div>
+
+        <div class = "btn_edit">
+          <a class="btn edit" href="{{ url_for('admin.edit_doctor', user_id=d.user_id) }}">Edit</a>
+
+          <form action="{{ url_for('admin.delete_user', user_id=d.user_id) }}" method="POST">
+            <button type="submit" class="btn btn-danger delete" onclick="return confirm('Delete this doctor?');">Delete</button>
+          </form>
+
+          <form action="{{ url_for('admin.blacklist', user_id=d.user_id) }}" method="POST">
+            {% if d.blacklist %}
+              <button class="btn unblock">Unblock</button>
+            {% else %}
+              <button class="btn black">Blacklist</button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No registered doctors.</p>
+  {% endif %}
+</div>
+
+<!-- Patients list -->
+<div class="card" style="margin-top:14px;">
+  <h4 style="margin-top:0">Registered Patients</h4>
+
+  {% if patients %}
+    {% for p in patients %}
+      <div class="user-row">
+        <div>
+          <div class="user-left">{{ p.username }}</div>
+          <div class="user-meta">{{ p.email_id }}</div>
+          <div class="user-meta">{{ p.contact_no or '-' }}</div>
+
+          <!-- <div class="user-meta">Dept: {{ p.department.dept_name if p.department else '-' }} -->
+            {% if p.blacklist %} <span class="badge badge-black">BLACKLISTED</span> {% endif %}
+        </div>
+
+        <div class = "btn_edit">
+          <a class="btn edit" href="{{ url_for('admin.edit_patient', user_id=p.user_id) }}">Edit</a>
+
+          <form action="{{ url_for('admin.delete_user', user_id=p.user_id) }}" method="POST">
+            <button type="submit" class="btn delete">Delete</button>
+          </form>
+
+          <form action="{{ url_for('admin.blacklist', user_id=p.user_id) }}" method="POST">
+            {% if p.blacklist %}
+              <button class="btn unblock">Unblock</button>
+            {% else %}
+              <button class="btn black">Blacklist</button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No registered patients.</p>
+  {% endif %}
+</div>
+
+<!-- Appointments table -->
+<div class="card" style="margin-top:14px;">
+  <h4 style = "margin-bottom: 7px;">Upcoming Appointments</h4>
+  <div style="overflow:auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Patient</th>
+          <th>Doctor</th>
+          <th>Department</th>
+          <th>When</th>
+          <th>History</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if appointments %}
+          {% for a in appointments %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ a.patient_name }}</td>
+              <td>{{ a.doctor_name or '-' }}</td>
+              <td>{{ a.department or '-' }}</td>
+              <td>{{ a.date }} / {% if a.time == 'slot1' %}
+                8:00 AM - 12:00 AM
+              
+              {% else %}
+                4:00 PM - 9:00 PM
+              {% endif %}</td>
+              <td><a class="btn btn_create" href="{{ url_for('patient_history', patient_id=a.patient_id) }}">View</a>
+</td></t>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="6" class="muted">No upcoming appointments</td></tr>
+        {% endif %}
+
+        
+      </tbody>
+    </table>
+  </div>
+
+  <a class="btn btn_create" href="{{ url_for('admin.admin_history', patient_id=1) }}">View Past Appointments</a>
+
+
+</div>
+{% endblock %}

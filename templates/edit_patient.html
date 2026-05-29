@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class = "edit-box">
+
+    <h2>Edit Patient</h2>
+
+    <form method="POST" class="edit-form">
+
+    <label>Username</label>
+    <input type="text" name="username" class="input" value="{{ user.username }}" required>
+
+    <label>Email</label>
+    <input type="email" name="email_id" class="input" value="{{ user.email_id }}" required>
+
+    <label>Contact No</label>
+    <input type="text" name="contact_no" class="input" value="{{ user.contact_no }}" required>
+
+    <label>Password (leave blank to keep same)</label>
+    <input type="text" name="password" class="input" placeholder="Enter new password">
+
+    <button type="submit" class="form-btn">Save Changes</button>
+    </form>
+    {% if session.get('role') == 'admin' %}
+         <a href="{{ url_for('admin.admin_dashboard') }}"class="back-link">← Back to Dashboard</a>
+    {% endif %}
+    {% if session.get('role') == 'patient' %}
+         <a href="{{ url_for('patient.patient_dashboard') }}"class="back-link">← Back to Dashboard</a>
+    {% endif %}
+
+
+</div>
+
+
+<style>
+
+    .edit-box {
+        max-width: 550px;
+        background-color:  #19b39e4a;
+        margin-top: 40px;
+        margin-left: 30%;
+        padding: 28px 32px;
+        border-radius: 6px;
+    }
+
+    .edit-box h2 {
+        text-align: center;
+        margin: 0 0 20px 0;
+        font-size: 1.5rem;
+    }
+
+    .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    label {
+        font-weight: 600;
+        margin-top: 4px;
+        margin-left: 20%;
+        margin-bottom: 2px;
+    }
+
+    .hint {
+        font-weight: normal;
+        color: var(--muted);
+        font-size: 0.85rem;
+    }
+
+    .input {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        width: 60%;
+        background-color: rgba(247, 248, 248, 0.743);
+        margin-bottom: 10px;
+        margin-left: 20%;
+    }
+
+    .input:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(14,165,164,0.2);
+    }
+
+    .form-btn {
+        margin-top: 12px;
+        width: 40%;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 6px;
+        background-color: rgb(2, 33, 33);
+        color: white;
+        font-weight: 700;
+        margin-left: 30%;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+</style>
+{% endblock %}

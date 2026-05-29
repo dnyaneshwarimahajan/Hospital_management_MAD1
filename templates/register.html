@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<div class="register">
+    <h2 >Patient Registration</h2>
+
+    <form method="POST">
+
+        <label>Full Name</label>
+        <input type="text" name="username" class="input" placeholder="Enter full name" required>
+
+        <label>Email</label>
+        <input type="email" name="email_id" class="input" placeholder="Enter email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" class="input" placeholder="Create password" required>
+
+        <label>Contact Number</label>
+        <input type="text" name="contact_no" class="input" placeholder="Enter contact number" required>
+
+        <button type="submit" class="btn">Register</button>
+    </form>
+
+    <p>
+        Already have an account?
+        <a href="{{ url_for('auth.login') }}">Login</a>
+    </p>
+</div>
+
+<style>
+.register{
+    max-width: 380px;
+    margin: auto;
+    margin-top: 100px;
+    background-color:  #19b39e4a;
+    padding: 26px;
+}
+.register h2{
+    margin-top:0;
+    margin-bottom:14px;
+    text-align:center;
+}
+.register p{
+    text-align:center;
+    margin-top:12px;
+
+}
+.input,btn {
+    width: 80%;
+    padding: 10px;
+    margin: 6px 0 16px 0;
+    margin-left: 10%;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+    background-color: rgba(247, 248, 248, 0.743);
+}
+.btn{
+    width: 50%;
+    height: 50%;
+    border-radius: 5%;
+    margin-left: 25%;
+    margin-top: 14px;
+    background-color: #3b95e38a;
+    border: 1px ;
+}
+button{
+    height: 100px;
+}
+.register a{
+    color: rgba(0, 0, 0, 0.795);
+    border-radius: 5%;
+}
+label{
+    text-align: center;
+    margin-left: 10%;
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{# templates/department_detail.html - Department overview + doctors list (wireframe style) #}
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+/* Page layout */
+.page {
+  max-width: 60%;
+  margin: 20px auto;
+  padding: 0 15px;
+  background: #fbfbfbc7;
+  margin-left: 10%;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+.container{
+  padding-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color:#2f0303
+}
+
+/* Basic Buttons */
+.btn {
+  padding: 6px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+.history{
+  background-color: #052c2fe2;
+  color: white;
+  font-weight: 700;
+}
+.back{
+  background-color: #2f0303;
+  color: white;
+  font-weight: 700;
+
+}
+
+.btn-primary {
+  border: 1px solid #000;
+  background-color:#2f0303;
+  color: rgb(255, 255, 255);
+  font-weight: 700;
+}
+
+.btn-light {
+  border: 1px solid #ccc;
+  background-color: #052c2fe2;
+  color: white;
+  font-weight: 700;
+}
+
+/* Sections */
+.section {
+  margin: 20px 0;
+}
+
+.overview {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+/* Doctor list */
+.doctors-box {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 6px;
+ 
+}
+
+.doctor-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background-color: #92f7f2b2;
+}
+
+.doctor-left {
+  font-weight: 600;
+}
+
+.doctor-meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Action buttons */
+.doctor-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Small note */
+.small-note {
+  font-size: 0.85rem;
+  color: #666;
+}
+</style>
+
+<div class="page">
+  <div class="header">
+    <h2>Department of {{ dept.dept_name }}</h2>
+    <div class="actions">
+      <!-- <a href="{{ url_for('patient.patient_history') }}" class = "btn history">History </a> -->
+      <a href="{{ url_for('patient.patient_dashboard') }}" class="btn back">Back</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Overview -->
+    <div class="section overview">
+      <h3 style="margin-top:0; margin-bottom:8px;">Overview</h3>
+      <p>
+        {{ dept.description or
+           "This department is dedicated to the diagnosis, treatment and care of patients. It houses a team of specialized doctors and support staff who work together to provide comprehensive care." }}
+      </p>
+    </div>
+
+    <!-- Doctors list -->
+    <div class="section">
+      <h4 style="margin-bottom:10px;">Doctors' list</h4>
+
+      <div class="doctors-box">
+        {% if doctors %}
+          {% for d in doctors %}
+            <div class="doctor-row">
+              <div>
+                <div class="doctor-left">Dr. {{ d.username }}</div>
+                <div class="doctor-meta">{{ d.email_id }} • {{ d.contact_no or '-' }}</div>
+                {% if d.blacklist %}
+                  <div class="small-note">Status: <strong style="color:#2c0202;">BLACKLISTED</strong></div>
+                {% endif %}
+              </div>
+
+              <div class="doctor-actions">
+                <a href="{{url_for('patient.patient_booking_chart', doctor_id = d.user_id)}}" class="btn btn-light">Check availability</a>
+                <a href="{{ url_for('doctor.view_doctor', doctor_id=d.user_id) }}" class="btn btn-primary">View details</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="small-note">No doctors currently listed in this department.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

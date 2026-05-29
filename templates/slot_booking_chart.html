@@ -1,0 +1,144 @@
+
+
+{% extends "base.html" %}
+{% block content %}
+  <style>
+
+  .container {
+    max-width: 750px;
+    margin: 20px auto;
+    padding: 12px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: #fff;
+  }
+
+
+  h2 { margin: 0 0 6px; font-size: 1.2rem; }
+  p.lead { margin: 0 0 12px; color: #555; }
+
+  .flash { padding: 10px; border-radius: 6px; margin-bottom: 8px; font-weight: 500; border: 1px solid #ddd; background: #fafafa; color:#111; }
+  .flash.success { border-color:#cfeadf; background:#f7fff7; }
+  .flash.warning { border-color:#f3e2c7; background:#fffaf2; }
+  .flash.danger  { border-color:#f4d7d7; background:#fff6f6; }
+
+  
+  .row { display:flex; gap:12px; align-items:center; margin:10px 0; flex-wrap:wrap; }
+
+
+  .date-box { min-width:120px; 
+    padding:8px; 
+    border-radius:6px; 
+    text-align:center; 
+    font-weight:600; 
+    border:1px solid #eee; 
+    background:#fafafa; }
+
+  .slots { display:flex; 
+    gap:8px; 
+    flex-wrap:wrap; 
+    align-items:center; }
+
+
+  .slot-btn {
+    padding:8px 10px;
+    border-radius:6px;
+    border:1px solid #bbb;
+    background:transparent;
+    cursor:pointer;
+    font-weight:600;
+    font-size:0.95rem;
+  }
+  .slot-unavailable { background:#eee; color:#777; cursor:not-allowed; }
+  .slot-booked      { background:#444; color:#fff; cursor:not-allowed; }
+  .slot-available   { border-color:#2d8f6f; color:#0b5132; }
+
+
+  form.inline { display:inline-block; margin:0; padding:0; }
+  form.inline .slot-btn { background:transparent; }
+
+
+  .note { margin:8px 0; padding:8px; border-radius:6px; border:1px solid #f0d9a8; background:#fffaf0; }
+  .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        font-weight: 600;
+        color: rgba(2, 43, 35, 0.814);
+        text-decoration: none;
+        
+    }
+
+  </style>
+<div class="container">
+    <h2>{{ doctor.username }} – Book Appointment</h2>
+    <p class="lead">Select a slot. Booked slots appear purple.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-list">
+          {% for category, message in messages %}
+            {% set cls = 'default' %}
+            {% if category == 'success' %}{% set cls = 'success' %}{% elif category == 'warning' %}{% set cls = 'warning' %}{% elif category == 'danger' %}{% set cls = 'danger' %}{% endif %}
+            <div class="flash {{ cls }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if patient_has_booking %}
+      <div class="note">
+        You already have one active booking. You cannot book another slot. To view or cancel your appointment, go to your Appointments page.
+      </div>
+    {% endif %}
+
+    {% for r in grid %}
+      <div class="row">
+        <div class="date-box">{{ r.date }}</div>
+
+        <div class="slots">
+          <!-- SLOT 1 -->
+          {% if (r.date, 'slot1') in booked %}
+            <button class="slot-btn slot-booked" disabled>{{ slot_labels['slot1'] }} • Booked</button>
+          {% elif not r.slot1 %}
+            <button class="slot-btn slot-unavailable" disabled>{{ slot_labels['slot1'] }} • Unavailable</button>
+          {% else %}
+            {% if patient_has_booking %}
+              <button class="slot-btn slot-unavailable" disabled>{{ slot_labels['slot1'] }} • Book</button>
+            {% else %}
+              <form class="inline" method="post" action="{{ url_for('patient.patient_book_slot') }}">
+                <input type="hidden" name="doctor_id" value="{{ doctor.user_id }}">
+                <input type="hidden" name="date" value="{{ r.date }}">
+                <input type="hidden" name="slot" value="slot1">
+                <button type="submit" class="slot-btn slot-available">{{ slot_labels['slot1'] }} • Book</button>
+              </form>
+            {% endif %}
+          {% endif %}
+
+          <!-- SLOT 2 -->
+          {% if (r.date, 'slot2') in booked %}
+            <button class="slot-btn slot-booked" disabled>{{ slot_labels['slot2'] }} • Booked</button>
+          {% elif not r.slot2 %}
+            <button class="slot-btn slot-unavailable" disabled>{{ slot_labels['slot2'] }} • Unavailable</button>
+          {% else %}
+            {% if patient_has_booking %}
+              <button class="slot-btn slot-unavailable" disabled>{{ slot_labels['slot2'] }} • Book</button>
+            {% else %}
+              <form class="inline" method="post" action="{{ url_for('patient.patient_book_slot') }}">
+                <input type="hidden" name="doctor_id" value="{{ doctor.user_id }}">
+                <input type="hidden" name="date" value="{{ r.date }}">
+                <input type="hidden" name="slot" value="slot2">
+                <button type="submit" class="slot-btn slot-available">{{ slot_labels['slot2'] }} • Book</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  <div style="margin-top:12px;">   
+    <a class="back-link" href="{{ url_for('patient.patient_dashboard') }}">Back</a>
+  </div>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .container1{
+     max-width: 380px;
+    margin: auto;
+    margin-top: 100px;
+    background-color:  #19b39e4a;
+    padding: 26px;
+
+  }
+  label{
+    text-align: center;
+    margin-left: 40%;
+    }
+  .container1 h3{
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  button{
+    width: 50%;
+    border-radius: 5%;
+    margin-left: 25%;
+    margin-top: 14px;
+    background-color: #3b95e38a;
+    border: 1px ;
+    padding: 6px;
+  }
+  .input{
+    margin-left: 25%;
+    margin-bottom: 4px;
+    border-radius: 6px;
+  }
+
+   .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+    }
+</style>
+<div class = "container1">
+  
+  <h3>Update Patient History — {{ patient.username }}</h3>
+
+  <form method="POST">
+    <div>
+      <label>Diagnosis</label><br>
+      <input class="input"  name="diagnosis" value="{{ (appt.treatment and appt.treatment.dignosis) or '' }}" required>
+    </div>
+
+    <div>
+      <label>Prescription</label><br>
+      <textarea class="input"  name="prescription" rows="4">{{ (appt.treatment and appt.treatment.prescription) or '' }}</textarea>
+    </div>
+
+    <div>
+      <label>Treatment</label><br>
+      <textarea class="input" name="treatment" rows="4">{{ (appt.treatment and appt.treatment.treatment) or '' }}</textarea>
+    </div>
+
+    <div>
+      <button type="submit">Save</button>
+      <a class="back-link" href="{{ url_for('doctor.doctor_dashboard') }}">Back</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

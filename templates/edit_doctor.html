@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Edit Doctor{% endblock %}
+
+{% block content %}
+
+<div class="edit-box">
+
+    <h2>Edit Doctor</h2>
+
+    <form method="POST" class="edit-form">
+
+        <label>Username</label>
+        <input type="text" name="username" class="input" value="{{ user.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email_id" class="input" value="{{ user.email_id }}" required>
+
+        <label>Password <span class="hint">(leave blank to keep same)</span></label>
+        <input type="text" name="password" class="input" placeholder="Enter new password">
+
+        <label>Department</label>
+        <input type="text" name="department_test" class="input" value="{{ user.department.dept_name if user.department else '' }}" required>
+
+        <!-- Department Dropdown -->
+        <label>Select Department  
+        <br>
+        <span class="hint">(Leave Same if not changing department from existing Departments)</span></label>
+        <select name="department" class="input">
+            <option value="{{ user.department.dept_id if user.department else '' }}">{{ user.department.dept_name if user.department else '' }}</option>
+
+            {% for dept in departments %}
+                <option value="{{ dept.id }}">{{ dept.dept_name }}</option>
+            {% endfor %}
+        </select required>
+
+        <!-- Select New Department -->
+
+        <label>Create New Department 
+        <br>
+        <span class="hint">(Leave blank if not creating a new department)</span></label>
+        <input type="text" name="new_department" class="input" placeholder="Enter new department name">
+
+        <label>Qualifications</label>
+        <input type="text" name="qualifications" class="input" value="{{ user.qualifications }}" required>
+
+        <label>Contact Number</label>
+        <input type="number" name="contact_no" class="input" value="{{ user.contact_no }}" required>
+
+        <label>Years of Experience</label>
+        <input type="number" name="years_experience" class="input" value="{{ user.years_experience }}" required>
+
+        <button type="submit" class="btn btn-primary form-btn">Save Changes</button>
+
+    </form>
+
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="back-link">← Back to Dashboard</a>
+</div>
+
+<style>
+
+    .edit-box {
+        max-width: 550px;
+        background-color:  #19b39e4a;
+        margin-top: 40px;
+        margin-left: 45%;
+        padding: 28px 32px;
+        border-radius: 6px;
+    }
+
+    .edit-box h2 {
+        text-align: center;
+        margin: 0 0 20px 0;
+        font-size: 1.5rem;
+    }
+
+    .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    label {
+        font-weight: 600;
+        margin-top: 4px;
+        margin-left: 20%;
+        margin-bottom: 2px;
+    }
+
+    .hint {
+        font-weight: normal;
+        color: var(--muted);
+        font-size: 0.85rem;
+    }
+
+    .input {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        width: 60%;
+        background-color: rgba(247, 248, 248, 0.743);
+        margin-bottom: 10px;
+        margin-left: 20%;
+    }
+
+    .input:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(14,165,164,0.2);
+    }
+
+
+    .form-btn {
+        margin-top: 12px;
+        width: 40%;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 6px;
+        background-color: rgb(2, 33, 33);
+        color: white;
+        font-weight: 700;
+        margin-left: 30%;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+</style>
+
+{% endblock %}
